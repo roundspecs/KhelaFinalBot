@@ -1,3 +1,4 @@
+import requests
 API_BASE_URL = 'https://codeforces.com/api/'
 
 def solved_today_count(handle: str, count: int = 20) -> int:
@@ -10,9 +11,7 @@ def solved_today_count(handle: str, count: int = 20) -> int:
 
 def _query_api(path: str, params: dict):
     url = API_BASE_URL + '/' + path
-    if(params):
-        url = url + '?'
-    url = url + '&'.join([f'{k}={v}' for k,v in params.items()])
-    print(url)
+    res = requests.get(url=url, params=params)
+    print(res.url)
 
 solved_today_count('roundspecs')
