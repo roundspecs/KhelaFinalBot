@@ -7,7 +7,7 @@ async def send_message(message, user_message):
         response = await responses.get_response(message, user_message)
         if response == None:
             return
-        await message.channel.send(response)
+        await message.reply(response)
     except Exception as e:
         print(e)
 
