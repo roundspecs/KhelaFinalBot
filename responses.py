@@ -1,14 +1,16 @@
 from codeforces_api import leaderboard
+from utils import get_handles
 
 
-def get_response(message: str) -> str | None:
-    p_message = message.lower()
+async def get_response(message, user_message: str) -> str | None:
+    p_message = user_message.lower()
 
     if p_message == "hello":
         return "hi"
 
     if p_message == "leaderboard":
-        handles = ["sakib.safwan", "ovi_xar", "roundspecs"]
+        await message.channel.send("Digging deep into the codeforces database. This may take a while...")
+        handles = get_handles()
         toppers = leaderboard(handles)
         res = "Number of problems solved today```yaml\nNo : CF handle\n"
         return (

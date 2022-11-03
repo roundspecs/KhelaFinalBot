@@ -4,7 +4,7 @@ import responses
 
 async def send_message(message, user_message):
     try:
-        response = responses.get_response(user_message)
+        response = await responses.get_response(message, user_message)
         await message.channel.send(response)
     except Exception as e:
         print(e)
