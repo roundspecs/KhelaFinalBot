@@ -9,8 +9,18 @@ async def get_response(message, user_message):
 
     p_message = user_message.lower()
 
+    if p_message == 'help':
+        return "- type `whats next` to see future plans\n"\
+        "- type `leaderboard` to see who solved how many problems today"
+
     if p_message in ["hello", "hi"]:
         return "ki obostha?"
+    
+    if p_message == "whats next":
+        return "**Plans:**\n"\
+        "- Make sure everyone solves problems with rating greater than their own rating\n"\
+        "- If someone does not solve any problem for 30 consecutive days, remove his/her handle form database\n"\
+        "- Automatically show leaderboard everyday at 11:59 PM"
 
     if p_message == "leaderboard":
         await message.channel.send(
