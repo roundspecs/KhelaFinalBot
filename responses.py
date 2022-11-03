@@ -9,14 +9,15 @@ async def get_response(message, user_message: str) -> str | None:
         return "hi"
 
     if p_message == "leaderboard":
-        await message.channel.send("Digging deep into the codeforces database. This may take a while...")
+        await message.channel.send("Digging deep into the codeforces database. This may take a while...\nPlease don't type `leaderboard` for next 5 minutes.")
         handles = get_handles()
         toppers = leaderboard(handles)
-        res = "Number of problems solved today```yaml\nNo : CF handle\n"
+        res = "**Number of problems solved today**```yaml\nNo : CF handle\n--------------\n"
         return (
             res
             + "\n".join([f"{count:02d} : {handle}" for count, handle in toppers])
             + "```"
-            + "Congratutaions your majesty, "
+            + "Congratutaions Coder of the day, "
             + toppers[0][1]
+            + " :crown:"
         )
