@@ -5,6 +5,7 @@ from datetime import datetime
 
 def leaderboard(handles: List[str], date=datetime.today().date()):
     res = [(solved_count(handle, date=date), handle) for handle in handles]
+    res = [item for item in res if item[0]]
     res.sort(reverse=True)
     return res
 
