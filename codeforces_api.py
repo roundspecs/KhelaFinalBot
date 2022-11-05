@@ -27,7 +27,7 @@ def solved_count(handle, count=30, date=datetime.today().date()):
     return count
 
 
-def get_rating(handles):
+def get_rating_from_cf(handles):
     h = ";".join(handles)
     res = _query_api("user.info", {"handles": h})
     res = [r.get("rating", 0) for r in res]
@@ -53,4 +53,4 @@ class CfFailedException(Exception):
 
 
 if __name__ == "__main__":
-    print(get_rating(["sakib.safwan", "ovi_xar", "roundspecs"]))
+    print(get_rating_from_cf(["sakib.safwan", "ovi_xar", "roundspecs"]))
