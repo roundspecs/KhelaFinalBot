@@ -28,6 +28,13 @@ def solved_count(handle, count=30, date=datetime.today().date()):
     return count
 
 
+def get_rating(handles):
+    h = ";".join(handles)
+    res = _query_api("user.info", {"handles": h})
+    res = [r["rating"] for r in res]
+    return res
+
+
 def _query_api(path, params):
     API_BASE_URL = "https://codeforces.com/api/"
     url = API_BASE_URL + "/" + path
@@ -47,4 +54,4 @@ class CfFailedException(Exception):
 
 
 if __name__ == "__main__":
-    print(leaderboard(["sakib.safwan", "ovi_xar", "roundspecs"]))
+    print(get_rating(["sakib.safwan", "ovi_xar", "roundspecs"]))
