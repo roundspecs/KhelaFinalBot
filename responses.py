@@ -1,5 +1,5 @@
 from codeforces_api import leaderboard
-from utils import get_handles
+from utils import get_handles, update_rating
 
 
 async def get_response(message, user_message):
@@ -36,3 +36,8 @@ async def get_response(message, user_message):
             + toppers[0][1]
             + "** :crown:"
         )
+    
+    if user_message == 'update rating':
+        await message.channel.send("This might take a while...")
+        update_rating()
+        return "Rating has been successfully updated"

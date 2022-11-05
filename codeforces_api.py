@@ -30,7 +30,7 @@ def solved_count(handle, count=30, date=datetime.today().date()):
 def get_rating(handles):
     h = ";".join(handles)
     res = _query_api("user.info", {"handles": h})
-    res = [r["rating"] for r in res]
+    res = [r.get("rating", 0) for r in res]
     return res
 
 
