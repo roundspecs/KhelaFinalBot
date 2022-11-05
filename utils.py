@@ -26,7 +26,7 @@ def update_rating():
             writer.writerow({"handle": h, "rating": r})
 
 
-def get_rating_from_csv():
+def get_ratings_from_csv():
     res = []
     with open("handles.csv", newline="") as csvfile:
         reader = csv.DictReader(csvfile)

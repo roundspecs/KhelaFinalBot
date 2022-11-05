@@ -2,14 +2,14 @@ import requests
 from datetime import datetime
 
 
-def leaderboard(handles, date=datetime.today().date()):
-    res = [(solved_count(handle, date=date), handle) for handle in handles]
+def leaderboard(handles, ratings, date=datetime.today().date()):
+    res = [(solved_count(h, r, date=date), h) for h, r in zip(handles, ratings)]
     res = [item for item in res if item[0]]
     res.sort(reverse=True)
     return res
 
 
-def solved_count(handle, count=30, date=datetime.today().date()):
+def solved_count(handle, rating, count=30, date=datetime.today().date()):
     def _is_submission_accepted(submission):
         return submission["verdict"] == "OK"
 
@@ -18,13 +18,28 @@ def solved_count(handle, count=30, date=datetime.today().date()):
         submission_date = datetime.fromtimestamp(timestamp).date()
         return date == submission_date
 
+    def _is_rating_more(submission):
+        r = submission["problem"].get("rating", float('inf'))
+        return r >= int(rating)
+
+    def _is_ok(submission):
+        return (
+            _is_submission_accepted(submission)
+            and _is_submitted_today(submission)
+            and _is_rating_more(submission)
+        )
+
+    def _get_problem_id(submission):
+        return str(submission["contestId"]) + str(submission["problem"]["index"])
+
     params = {"handle": handle, "count": count}
     submissions = _query_api("user.status", params=params)
-    count = 0
+    subs = set()
     for submission in submissions:
-        if _is_submission_accepted(submission) and _is_submitted_today(submission):
-            count += 1
-    return count
+        if _is_ok(submission):
+            subs.add(_get_problem_id(submission))
+    print(subs)
+    return len(subs)
 
 
 def get_rating_from_cf(handles):
@@ -51,6 +66,5 @@ def _query_api(path, params):
 class CfFailedException(Exception):
     pass
 
-
-if __name__ == "__main__":
-    print(get_rating_from_cf(["sakib.safwan", "ovi_xar", "roundspecs"]))
+if __name__=="__main__":
+    solved_count("CHY_YASIR", 1450)

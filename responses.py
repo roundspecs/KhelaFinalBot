@@ -1,5 +1,5 @@
 from codeforces_api import leaderboard
-from utils import get_handles_from_csv, update_rating
+from utils import get_handles_from_csv, update_rating, get_ratings_from_csv
 
 
 async def get_response(message, user_message):
@@ -33,7 +33,8 @@ async def get_response(message, user_message):
             "Digging deep into the codeforces database. This may take a while...\nPlease don't type `leaderboard` for the next 5 minutes.\nI'll mention you when I'm done (if nothing goes wrong)."
         )
         handles = get_handles_from_csv()
-        toppers = leaderboard(handles)
+        ratings = get_ratings_from_csv()
+        toppers = leaderboard(handles, ratings)
         res = "**Number of problems solved today**```yaml\nNo : CF handle\n--------------\n"
         return (
             res
