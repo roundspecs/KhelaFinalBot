@@ -9,7 +9,7 @@ def leaderboard(handles, ratings, date=datetime.today().date()):
     return res
 
 
-def solved_count(handle, rating, count=30, date=datetime.today().date()):
+def solved_count(handle, rating, count=20, date=datetime.today().date()):
     def _is_submission_accepted(submission):
         return submission["verdict"] == "OK"
 
