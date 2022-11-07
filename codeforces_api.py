@@ -38,7 +38,6 @@ def solved_count(handle, rating, count=20, date=datetime.today().date()):
     for submission in submissions:
         if _is_ok(submission):
             subs.add(_get_problem_id(submission))
-    print(subs)
     return len(subs)
 
 
