@@ -40,7 +40,7 @@ async def get_response(message, user_message):
             res
             + "\n".join([f"{count:02d} : {handle}" for count, handle in toppers])
             + "```"
-            + "Congratutaions coder of the day, **"
+            + "Congratutaions coder of the day (so far), **"
             + toppers[0][1]
             + "** :crown:"
         )
