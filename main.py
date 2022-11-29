@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from cf import get_duel_url, handle_exists, is_prob_ac
 from handle import get_all_uid_handle, handleset, uid2handle, uid_exists
+from keep_alive import keep_alive
 
 client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
@@ -251,6 +252,6 @@ async def challenge(itr: Interaction, rating: int, opponent: Member = None):
             embed=embed, view=ApprovalButtons(itr.user, rating, opponent)
         )
 
-
+keep_alive()
 TOKEN = os.environ["TOKEN"]
 client.run(TOKEN)
