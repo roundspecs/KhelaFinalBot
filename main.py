@@ -1,8 +1,10 @@
+import os
+
 import discord
 from discord import Color, Embed, Interaction, Member
 from discord.ext import commands
 
-from cf import handle_exists, get_duel_url, is_prob_ac
+from cf import get_duel_url, handle_exists, is_prob_ac
 from handle import handleset, uid2handle, uid_exists
 
 client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
@@ -194,6 +196,5 @@ async def challenge(itr: Interaction, rating: int, opponent: Member = None):
         )
 
 
-with open("token.txt") as f:
-    TOKEN = f.read()
-    client.run(TOKEN)
+TOKEN = os.environ["TOKEN"]
+client.run(TOKEN)
