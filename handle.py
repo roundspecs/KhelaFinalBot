@@ -17,7 +17,7 @@ def uid_exists(uid: int) -> bool:
     return (df["uid"] == uid).any()
 
 
-def uid2handle(uid: int) -> str | None:
+def uid2handle(uid: int) -> str:
     df = pd.read_csv(HANLDES_DB)
     s = df.loc[df["uid"] == uid, "handle"].to_list()
     if len(s) != 0:
