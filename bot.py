@@ -132,9 +132,11 @@ class ApprovalButtons(discord.ui.View):
             await itr.response.send_message(embed=embed, ephemeral=True)
         else:
             await itr.response.defer()
-            embed = Embed(title="Challenge started", color=Color.green())
-            embed.add_field(name="Player 1", value=self.by.mention, inline=False)
-            embed.add_field(name="Player 2", value=itr.user.mention, inline=False)
+            embed = Embed(
+                title="Challenge started",
+                description=f"{self.by.mention} :crossed_swords: {itr.user.mention}",
+                color=Color.purple(),
+            )
             embed.add_field(name="Rating", value=self.rating, inline=False)
             url = get_duel_url(uid1=itr.user.id, uid2=self.by.id, rating=self.rating)
             view = EndDuelButtons(p1=self.by, p2=itr.user, url=url, rating=self.rating)
