@@ -184,7 +184,7 @@ async def challenge(itr: Interaction, rating: int, opponent: Member = None):
         title = (
             "Anyone" if opponent == None else f"{opponent.display_name},"
         ) + " up for a duel?"
-        embed = Embed(title=title, color=Color.blurple())
+        embed = Embed(title=title, color=Color.purple())
         embed.add_field(name="Opponent", value=f"{itr.user.mention}", inline=False)
         embed.add_field(name="Rating", value=rating, inline=False)
         embed.set_footer(text=f"This challenge will be automatically withdrawn in 60s")
