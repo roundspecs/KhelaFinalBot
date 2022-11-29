@@ -5,7 +5,7 @@ from discord import Color, Embed, Interaction, Member
 from discord.ext import commands
 
 from cf import get_duel_url, handle_exists, is_prob_ac
-from handle import handleset, uid2handle, uid_exists
+from handle import get_all_uid_handle, handleset, uid2handle, uid_exists
 
 client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
@@ -58,6 +58,24 @@ async def whois(itr: Interaction, member: Member):
     embed.set_thumbnail(url=member.avatar)
     await itr.response.send_message(embed=embed, ephemeral=True)
 
+@client.tree.command(name="list", description="List all handles")
+async def list(itr: Interaction):
+    uids, _handles = get_all_uid_handle()
+    users = []
+    handles = []
+    for uid, handle in zip(uids,_handles):
+        user = itr.guild.get_member(uid)
+        if user!=None:
+            users.append(user)
+            handles.append(handle)
+    if users:
+        embed = Embed(title="List of all handles")
+        embed.add_field(name="Username", value="\n".join([user.mention for user in users]))
+        embed.add_field(name="Handle", value="\n".join(handles))
+        await itr.response.send_message(embed=embed, ephemeral=True)
+    else:
+        embed = Embed(description = "No handle found. User `/sethandle` to set handle", color=Color.red())
+        await itr.response.send_message(embed=embed, ephemeral=True)
 
 class EndDuelButtons(discord.ui.View):
     def __init__(self, p1: Member, p2: Member, url: str, rating: int, timeout=None):
