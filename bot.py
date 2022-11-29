@@ -112,7 +112,9 @@ class ApprovalButtons(discord.ui.View):
         - else start duel
         """
         if self.by.id == itr.user.id:
-            embed = Embed(description="You can't challenge yourself", color=Color.red())
+            embed = Embed(
+                description="You can't accept your own challenge", color=Color.red()
+            )
             await itr.response.send_message(embed=embed, ephemeral=True)
         elif not uid_exists(itr.user.id):
             embed = Embed(
