@@ -98,9 +98,10 @@ class EndDuelButtons(discord.ui.View):
 
 
 class ApprovalButtons(discord.ui.View):
-    def __init__(self, by: Member, rating: int, timeout=60):
+    def __init__(self, by: Member, rating: int, opponent: Member, timeout=60):
         self.by = by
         self.rating = rating
+        self.opponent = opponent
         super().__init__(timeout=timeout)
 
     @discord.ui.button(label="Accept", style=discord.ButtonStyle.success)
@@ -120,6 +121,11 @@ class ApprovalButtons(discord.ui.View):
                     "Use the `/sethandle` to set your handle"
                 ),
                 color=Color.red(),
+            )
+            await itr.response.send_message(embed=embed, ephemeral=True)
+        if self.opponent != None and self.opponent.id != itr.user.id:
+            embed = Embed(
+                description="This challenge is not for you", color=Color.red()
             )
             await itr.response.send_message(embed=embed, ephemeral=True)
         else:
@@ -144,7 +150,7 @@ class ApprovalButtons(discord.ui.View):
     name="challenge",
     description="Challenge someone with a CF problem (automatically withdrawn in 60s)",
 )
-async def challenge(itr: Interaction, rating: int):
+async def challenge(itr: Interaction, rating: int, opponent: Member = None):
     """
     - if the user didn't set handle asks him to set handle
     - if rating is not valid send error message
@@ -155,20 +161,32 @@ async def challenge(itr: Interaction, rating: int):
     elif not uid_exists(itr.user.id):
         embed = Embed(
             description=(
-                "Can't find you handle in the database\n"
+                "Can't find your handle in the database\n"
                 "Use the `/sethandle` to set your handle"
             ),
             color=Color.red(),
         )
         await itr.response.send_message(embed=embed, ephemeral=True)
+    elif opponent != None and not uid_exists(opponent.id):
+        embed = Embed(
+            description=(
+                f"Can't find {opponent.mention}'s handle in the database\n"
+                "Use the `/sethandle` to set his handle"
+            ),
+            color=Color.red(),
+        )
+        await itr.response.send_message(embed=embed)
     else:
-        embed = Embed(title="Anyone up for a duel?", color=Color.blurple())
+        title = (
+            "Anyone" if opponent == None else f"{opponent.display_name},"
+        ) + " up for a duel?"
+        embed = Embed(title=title, color=Color.blurple())
         embed.add_field(name="Opponent", value=f"{itr.user.mention}", inline=False)
         embed.add_field(name="Rating", value=rating, inline=False)
         embed.set_footer(text=f"This challenge will be automatically withdrawn in 60s")
 
         await itr.response.send_message(
-            embed=embed, view=ApprovalButtons(itr.user, rating)
+            embed=embed, view=ApprovalButtons(itr.user, rating, opponent)
         )
 
 
