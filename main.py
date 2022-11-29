@@ -254,4 +254,8 @@ async def challenge(itr: Interaction, rating: int, opponent: Member = None):
 
 keep_alive()
 TOKEN = os.environ["TOKEN"]
-client.run(TOKEN)
+try:
+    client.run(TOKEN)
+except discord.errors.HTTPException:
+    os.system("kill 1")
+    os.system("python restarter.py")
