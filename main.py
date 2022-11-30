@@ -1,10 +1,11 @@
+import asyncio
 import os
 
 import discord
 from discord import Color, Embed, Interaction, Member
 from discord.ext import commands
 
-from cf import get_duel_url, handle_exists, is_prob_ac
+from cf import get_duel_url, handle_exists, who_solved_first
 from handle import get_all_uid_handle, handleset, uid2handle, uid_exists
 from keep_alive import keep_alive
 
@@ -129,31 +130,25 @@ class EndDuelButtons(discord.ui.View):
         if itr.user.id != self.p1.id and itr.user.id != self.p2.id:
             embed = Embed(description="The challenge is not for you", color=Color.red())
             await itr.response.send_message(embed=embed, ephemeral=True)
-        elif not is_prob_ac(self.url, self.rating, itr.user.id):
-            embed = Embed(
-                description="You haven't completed the challenge yet", color=Color.red()
-            )
-            await itr.response.send_message(embed=embed, ephemeral=True)
         else:
-            await itr.response.defer()
-            other: Member
-            if itr.user.id == self.p1.id:
-                other = self.p2
+            # embed = Embed(description="Checking if you completed the challenge", color=Color.purple())
+            # await itr.response.send_message(embed=embed, ephemeral=True)
+            winner_id = who_solved_first(self.p1.id, self.p2.id, self.url)
+            if winner_id == None:
+                embed = Embed(
+                    description="None of you have completed the challenge yet",
+                    color=Color.red(),
+                )
+                await itr.response.send_message(embed=embed, ephemeral=True)
             else:
-                other = self.p1
-            winner: Member
-            loser: Member
-            if is_prob_ac(self.url, self.rating, other.id):
-                winner = other
-                loser = itr.user
-            else:
-                winner = itr.user
-                loser = other
-            embed = Embed(
-                description=f"{winner.mention} won agains {loser.mention}!",
-                color=Color.green(),
-            )
-            await itr.message.edit(embed=embed, view=None)
+                await itr.response.defer()
+                loser = self.p1 if winner_id == self.p2.id else self.p2
+                winner = client.get_user(winner_id)
+                embed = Embed(
+                    description=f"{winner.mention} won agains {loser.mention}!",
+                    color=Color.green(),
+                )
+                await itr.message.edit(embed=embed, view=None)
 
 
 class ApprovalButtons(discord.ui.View):
@@ -170,7 +165,7 @@ class ApprovalButtons(discord.ui.View):
         - if user didnt set handle, show error
         - else start duel
         """
-        if self.by.id == itr.user.id:
+        if False and self.by.id == itr.user.id:
             embed = Embed(
                 description="You can't accept your own challenge", color=Color.red()
             )
@@ -184,13 +179,19 @@ class ApprovalButtons(discord.ui.View):
                 color=Color.red(),
             )
             await itr.response.send_message(embed=embed, ephemeral=True)
-        if self.opponent != None and self.opponent.id != itr.user.id:
+        elif self.opponent != None and self.opponent.id != itr.user.id:
             embed = Embed(
                 description="This challenge is not for you", color=Color.red()
             )
             await itr.response.send_message(embed=embed, ephemeral=True)
         else:
             await itr.response.defer()
+            embed = Embed(
+                title="Starting challenge",
+                description="This may tak a while...",
+                color=Color.purple(),
+            )
+            await itr.message.edit(embed=embed, view=None)
             embed = Embed(
                 title="Challenge started",
                 description=f"{self.by.mention} :crossed_swords: {itr.user.mention}",
@@ -251,6 +252,7 @@ async def challenge(itr: Interaction, rating: int, opponent: Member = None):
         await itr.response.send_message(
             embed=embed, view=ApprovalButtons(itr.user, rating, opponent)
         )
+
 
 keep_alive()
 TOKEN = os.environ["TOKEN"]

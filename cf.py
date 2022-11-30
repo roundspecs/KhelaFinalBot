@@ -29,6 +29,40 @@ def is_prob_ac(url: str, rating: int, uid: int):
     h = handle.uid2handle(uid)
     return pID in _get_all_ac_subs(h)
 
+
+def who_solved_first(uid1: int, uid2: int, url: str):
+    contestID, index = url.strip("/").split("/")[-2:]
+    subs1 = _query_api(
+        "user.status", params={"handle": handle.uid2handle(uid1), "count": 20}
+    )
+    subs2 = _query_api(
+        "user.status", params={"handle": handle.uid2handle(uid2), "count": 20}
+    )
+
+    def _is_sub_ok(sub):
+        return (
+            sub.get("contestId") == contestID
+            and sub.get("verdict") == "OK"
+            and sub.get("problem").get("index") == index
+        )
+
+    subs1 = [sub for sub in subs1 if _is_sub_ok(sub)]
+    subs2 = [sub for sub in subs2 if _is_sub_ok(sub)]
+
+    if not subs1 and not subs2:
+        return None
+    if not subs1:
+        return uid2
+    if not subs2:
+        return uid1
+
+    min_sub_time1 = min([sub.get("creationTimeSeconds") for sub in subs1])
+    min_sub_time2 = min([sub.get("creationTimeSeconds") for sub in subs2])
+    if min_sub_time1 < min_sub_time2:
+        return uid1
+    return uid2
+
+
 def _get_all_subs(handle: str):
     params = {"handle": handle}
     submissions = _query_api("user.status", params=params)
@@ -36,6 +70,7 @@ def _get_all_subs(handle: str):
     for submission in submissions:
         subs.add(_submission2pID(submission))
     return subs
+
 
 def _get_all_ac_subs(handle: str):
     params = {"handle": handle}
@@ -60,7 +95,7 @@ def _problemDict2pID(problem: dict):
 
 
 def _url2pID(url: str, rating: int):
-    splitter = url.strip('/').split('/')
+    splitter = url.strip("/").split("/")
     contestID, index = splitter[-2:]
     return (int(contestID), index, rating)
 

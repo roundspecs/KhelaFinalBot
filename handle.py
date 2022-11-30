@@ -23,6 +23,7 @@ def uid2handle(uid: int) -> str:
     if len(s) != 0:
         return s[0]
 
+
 def get_all_uid_handle():
     df = pd.read_csv(HANLDES_DB)
     return df["uid"].to_list(), df["handle"].to_list()
