@@ -165,7 +165,7 @@ class ApprovalButtons(discord.ui.View):
         - if user didnt set handle, show error
         - else start duel
         """
-        if False and self.by.id == itr.user.id:
+        if self.by.id == itr.user.id:
             embed = Embed(
                 description="You can't accept your own challenge", color=Color.red()
             )
