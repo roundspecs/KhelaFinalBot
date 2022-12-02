@@ -41,7 +41,7 @@ def who_solved_first(uid1: int, uid2: int, url: str):
 
     def _is_sub_ok(sub):
         return (
-            sub.get("contestId") == contestID
+            str(sub.get("contestId")) == contestID
             and sub.get("verdict") == "OK"
             and sub.get("problem").get("index") == index
         )
