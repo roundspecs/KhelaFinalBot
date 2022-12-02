@@ -144,7 +144,7 @@ class EndDuelButtons(discord.ui.View):
                 loser = self.p1 if winner_id == self.p2.id else self.p2
                 winner = client.get_user(winner_id)
                 embed = Embed(
-                    description=f"{winner.mention} won agains {loser.mention}!",
+                    description=f"{winner.mention} won against {loser.mention}!",
                     color=Color.green(),
                 )
                 await itr.message.edit(embed=embed, view=None)
@@ -246,10 +246,12 @@ async def challenge(itr: Interaction, rating: int, opponent: Member = None):
         embed = Embed(title=title, color=Color.purple())
         embed.add_field(name="Opponent", value=f"{itr.user.mention}", inline=False)
         embed.add_field(name="Rating", value=rating, inline=False)
-        embed.set_footer(text=f"This challenge will be automatically withdrawn in 60s")
-
+        embed.set_footer(text=f"This challenge will be automatically withdrawn in 120s")
+        content = None if opponent == None else opponent.mention
         await itr.response.send_message(
-            embed=embed, view=ApprovalButtons(itr.user, rating, opponent)
+            content=content,
+            embed=embed,
+            view=ApprovalButtons(itr.user, rating, opponent, timeout=120),
         )
 
 
